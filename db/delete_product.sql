@@ -1,0 +1,1 @@
+DELETE FROM productshelfie WHERE id = $1
