@@ -6,25 +6,25 @@ class Form extends Component {
   constructor() {
     super();
     this.state = {
-      image: "",
       name: "",
       price: "",
-      img:
-        "https://t3.ftcdn.net/jpg/02/03/65/94/240_F_203659482_n1ur56bmpbs5z5EONuXNWYkJtwIsrTTV.jpg"
+      img_url: "",
+      previewimg:
+        "https://wanowi.com/public/uploads/products/list/product-default.jpg"
     };
   }
 
   componentDidMount() {
-    if (this.state.image) {
-      this.setState({ preview: this.state.img });
+    if (this.state.imgurl) {
+      this.setState({ previewimg: this.state.imgurl });
     }
     if (this.props.location.state) {
-      this.selectedEdit(this.props.location.id);
+      this.selectedEdit(this.props.location.state.id);
     }
   }
 
-  componentDidUpdate(lastprops) {
-    if (lastprops.location.pathname !== this.props.location.pathname) {
+  componentDidUpdate(oldprops) {
+    if (oldprops.location.pathname !== this.props.location.pathname) {
       this.clearInput();
     }
   }
@@ -32,27 +32,34 @@ class Form extends Component {
   getInventory = () => {
     axios
       .get("/api/inventory")
-      .then(res => this.setState({ inventory: res.data }));
+      .then(res => this.setState({ inventory: res.data }))
+      .catch(err => console.log(err));
   };
 
   selectedEdit = id => {
-    axios.get(`/api/product/${id}`).then(res => {
-      const { name, price, img } = res.data[0];
-      this.setState({
-        name,
-        price,
-        image: img,
-        imagepreview: img
-      }).then(this.getInventory());
-    });
+    axios
+      .get(`/api/product/${id}`)
+      .then(res => {
+        const { name, price, img } = res.data[0];
+        this.setState({
+          name,
+          price,
+          imgurl: img,
+          previewimg: img
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   editItem = () => {
+    console.log(this.state);
     axios
       .put(`/api/product/${this.props.location.state.id}`, {
         name: this.state.name,
         price: this.state.price,
-        image: this.state.image
+        imgurl: this.state.imgurl
       })
       .then(this.getInventory())
       .catch(err => console.log(err));
@@ -60,6 +67,7 @@ class Form extends Component {
 
   handleNameChange = name => {
     this.setState({ name });
+    // console.log(`this.state.name: ${this.state.name}`);
   };
 
   handlePriceChange = price => {
@@ -68,59 +76,105 @@ class Form extends Component {
 
   onError = () => {
     this.setState({
-      img:
-        "https://t3.ftcdn.net/jpg/02/03/65/94/240_F_203659482_n1ur56bmpbs5z5EONuXNWYkJtwIsrTTV.jpg"
+      previewimg:
+        "https://wanowi.com/public/uploads/products/list/product-default.jpg"
     });
   };
 
-  handleImageChange = img => {
-    img
-      ? this.setState({ image: img, img: img })
+  handleImageChange = img_url => {
+    img_url
+      ? this.setState({ img_url: img_url, previewimg: img_url })
       : this.setState({
-          img:
-            "https://t3.ftcdn.net/jpg/02/03/65/94/240_F_203659482_n1ur56bmpbs5z5EONuXNWYkJtwIsrTTV.jpg"
+          previewimg:
+            "https://wanowi.com/public/uploads/products/list/product-default.jpg"
         });
+    // console.log(`this.state.imgurl: ${this.state.img_url}`);
   };
 
   addToDatabase = () => {
     const newProduct = {
       name: this.state.name,
       price: this.state.price,
-      image: this.state.image
-        ? this.state.image
-        : "https://t3.ftcdn.net/jpg/02/03/65/94/240_F_203659482_n1ur56bmpbs5z5EONuXNWYkJtwIsrTTV.jpg"
+      imgurl: this.state.img_url
+        ? this.state.img_url
+        : "https://wanowi.com/public/uploads/products/list/product-default.jpg"
     };
-  };
-
-  clearInput = () => {
-    this.setState({ name: "", price: "", image: "" });
+    // console.log(newProduct);
 
     axios
       .post("/api/product", newProduct)
       .then(res => {
-        console.log(res);
-        this.clearInput();
+        console.log("request sent");
+        // this.clearInput();
       })
       .catch(err => console.log(`client side err: ${err}`));
-    this.clearInput();
+    // this.clearInput();
   };
 
   clearInput = () => {
-    this.setState({ name: "", price: "", image: "" });
+    this.setState({ name: "", price: "", img_url: "" });
   };
+
+  //RENDER
 
   render() {
     return (
-      <div className="form">
-        <div className="input-holder">
-          <input placeholder="image"></input>
-          <input placeholder="name"></input>
-          <input placeholder="price"></input>
-        </div>
-        <div className="button-holder">
-          <button>Add</button>
-          <button>Cancel</button>
-        </div>
+      <div className="formDiv">
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            this.props.location.state ? this.editItem() : this.addToDatabase();
+            window.location.replace("/");
+          }}
+        >
+          <img
+            className="previewimg"
+            alt="preview"
+            src={this.state.previewimg}
+            onError={this.onError}
+          />
+          <input
+            className="formInput"
+            value={this.state.name}
+            placeholder="product name"
+            onChange={e => this.handleNameChange(e.target.value)}
+          />
+
+          <input
+            className="formInput"
+            value={this.state.price}
+            placeholder="price, full dollar amount only"
+            onChange={e => this.handlePriceChange(e.target.value)}
+          />
+          <input
+            className="formInput"
+            value={this.state.img_url}
+            placeholder="copy and paste image url here"
+            onChange={e => this.handleImageChange(e.target.value)}
+          />
+          <div className="formButtonDiv">
+            <button
+              className="formButton"
+              type="button"
+              onClick={() => this.clearInput()}
+            >
+              Clear
+            </button>
+            {!this.props.location.state ? (
+              <button
+                className="formButton"
+                type="submit"
+                onClick={console.log("something")}
+              >
+                Add to Inventory
+              </button>
+            ) : (
+              <button className="formButton" type="submit">
+                Save Changes
+              </button>
+            )}
+          </div>
+        </form>
       </div>
     );
   }

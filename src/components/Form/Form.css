@@ -1,6 +1,50 @@
-.form {
-  height: 20rem;
-  width: 25%;
-  background: #3ad886;
-  border-radius: 2%;
+.previewimg {
+  width: 250px;
+  height: 150px;
+}
+
+form {
+  padding: 0, 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
+  width: 425px;
+  height: 500px;
+  background-color: #3ad886;
+  border-radius: 10px;
+}
+
+.formDiv {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: space-around;
+}
+
+.formButtonDiv {
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.formButton {
+  padding: 0 20px;
+  background-color: #ed6b5a;
+  border: none;
+  border-radius: 8px;
+  height: 50px;
+  margin: 0 5px;
+}
+
+.formButton:hover {
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  cursor: pointer;
+}
+
+.formInput {
+  width: 90%;
+  font-size: 18px;
+  border: none;
 }

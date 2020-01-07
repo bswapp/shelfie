@@ -3,7 +3,7 @@ module.exports = {
     const db = req.app.get("db");
     db.get_products()
       .then(products => res.status(200).send(products))
-      .catch(error => console.log(err));
+      .catch(err => console.log(err));
   },
 
   getProduct: (req, res) => {
@@ -11,17 +11,18 @@ module.exports = {
       { id } = req.params;
     db.get_product(id)
       .then(product => res.status(200).send(product))
-      .catch(error => console.log(error));
+      .catch(err => console.log(err));
   },
 
   addProduct: (req, res) => {
-    const db = req.app.get("db"),
-      { name, price, image } = req.body;
-    db.add_product(name, price, image)
+    const db = req.app.get("db");
+    console.log(db.add_product);
+    const { name, price, imgurl } = req.body;
+    db.add_product(name, price, imgurl)
       .then(products => {
         res.sendStatus(200);
       })
-      .catch(error => console.log(error));
+      .catch(err => console.log(err));
   },
 
   deleteProduct: (req, res) => {
@@ -31,17 +32,17 @@ module.exports = {
       .then(() => {
         res.sendStatus(200);
       })
-      .catch(error => res.status(500).send(console.log(error)));
+      .catch(err => res.status(500).send(err));
   },
 
   editProduct: (req, res) => {
     const db = req.app.get("db"),
       { id } = req.params,
-      { name, price, image } = req.body;
-    db.edit_product(id, name, price, image)
+      { name, price, imgurl } = req.body;
+    db.edit_product(id, name, price, imgurl)
       .then(() => {
         res.sendStatus(200);
       })
-      .catch(error => res.status(500).send(error));
+      .catch(err => res.status(500).send(err));
   }
 };

@@ -1,5 +1,49 @@
-header {
-  height: 8vh;
-  width: 100vw;
-  background: #ab2a19;
+nav {
+  position: sticky;
+  background-color: #ab2a19;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 50px;
+}
+
+img {
+  width: 30px;
+  height: 30px;
+}
+
+.iconTitle {
+  display: flex;
+  align-items: center;
+  width: 10%;
+  margin: 0 40px;
+}
+
+.iconTitle:hover {
+  font-weight: bolder;
+}
+.title {
+  margin-left: 20px;
+  font-size: 20px;
+  color: white;
+  font-family: "Open Sans", sans-serif;
+}
+
+.headerButton {
+  background-color: #ed6b5a;
+  border: none;
+  border-radius: 2px;
+  height: 20px;
+  margin: 0 5px;
+}
+
+.headerButton:hover {
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  cursor: pointer;
+}
+
+.link {
+  text-decoration: none;
+  color: black;
 }

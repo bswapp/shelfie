@@ -23,7 +23,7 @@ class Dashboard extends Component {
   // * Giving me a Get 500 error at Dashboard.js 20. Check Server with Postman to double check?? //
 
   deleteProduct = id => {
-    axios.delete("/api/product/${id}").then(() => {
+    axios.delete(`/api/product/${id}`).then(() => {
       this.getInventory();
     });
   };
